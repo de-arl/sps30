@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Tools to use Sensirion SPS30 Particulate Matter sensor with Raspberry Pi
 ## sps30.sh
 ### Description
@@ -6,49 +5,32 @@ This script is a command line tool to read and display data from the Sensirion S
 ### Requirements
 Before you can use this tool to read data from the sensor, you have to install the driver provided by the manufacturer: [linux-sps30](https://github.com/Sensirion/linux-sps30).
 ### Installation
-Written in pure bash, **sps30.sh** does not need to be installed. You only have to make it executable, then you can run the tool.
+Written in pure bash, **sps30.sh** does not need to be installed. You only have to make it executable, then you can run the tool.  
 '''
 sudo chmod +x sps30.sh
 ./sps30.sh
 '''
 ### Usage
 #### Read sensor and display data
-To display data, run:
+To display data, run:  
 '''
 ./sps30.sh
 ''' 
 #### Read sensor and log data
-To log sensor data to a file in csv format, invoke the tool like this:
+To log sensor data to a file in csv format, invoke the tool like this:  
 '''
 ./sps30.sh -o path/to/your/logfile.csv
 '''
 #### Set sensor read interval
-The default interval for the tool to wait between sensor reads is 60 seconds. 
-To change the interval, invoke the tool like this:
+The default interval for the tool to wait between sensor reads is 60 seconds.  
+To change the interval, invoke the tool like this:  
 '''
 ./sps30.sh -i 30
 '''
 #### Quiet Mode
-In quiet mode, sensor data is not displayed:
+In quiet mode, sensor data is not displayed:  
 '''
 ./sps30.sh -q
-'''
-### Example Output
-'''
-==============  SPS30 Particulate Matter Sensor  ==============
- Data logging mode.
-Data log file: /path/to/logfile.csv
-Last sensor read: 2021-03-14 20:55:53
-Next sensor read: 2021-03-14 20:56:08
-	PM_1	2.82
-	PM_2.5	3.00
-	PM_4	2.99
-	PM_10	2.97
-UNIT [PM_i] = 10E-06 g / m^3
-PM_i is the Concentration of atmospheric Particulate Matter,
-smaller than i micrometers in microgram per cubic meter.
-(Press ctrl+c to quit)
-===============================================================
 '''
 ## sps30_service.sh, sps30.service and sps30.timer
 The script **sps30_logger.sh** provides functionality to read and
@@ -118,7 +100,3 @@ provided within sps30_logger.sh**
 Feel free to contact me if you have questions. Contact information
 is provided in the scripts.
                                             de-arl,      Munich 2021-04-13
-=======
-# sps30
-Shell code to read and log Sensirion SPS30 Particulate Matter sensor data
->>>>>>> dc397eca2cd70a15b679beff7a1ac7a3c9f09044
