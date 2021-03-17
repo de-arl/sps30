@@ -1,0 +1,9 @@
+[Unit]
+Description="Timer to trigger read and log of SPS30 Particulate Matter sensor data"
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=10min
+
+[Install]
+WantedBy=multi-user.target

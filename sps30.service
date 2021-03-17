@@ -1,0 +1,8 @@
+[Unit]
+Description=Service to trigger read and log SPS30 Particulate Matter sensor data
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+ExecStart=/path/to/git/sps30/sps30_logger.sh
