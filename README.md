@@ -7,30 +7,47 @@ Before you can use this tool to read data from the sensor, you have to install t
 ### Installation
 Written in pure bash, **sps30.sh** does not need to be installed. You only have to make it executable, then you can run the tool.  
 ```
-sudo chmod +x sps30.sh
-./sps30.sh
+# chmod +x sps30.sh
+$ ./sps30.sh
 ```
 ### Usage
 #### Read sensor and display data
 To display data, run:  
 ```
-./sps30.sh
+$ ./sps30.sh
 ``` 
+### Example output
+```
+==============  SPS30 Particulate Matter Sensor  ==============
+ Data logging mode.
+Data log file: /path/to/logfile.csv
+Last sensor read: 2021-03-14 20:55:53
+Next sensor read: 2021-03-14 20:56:08
+	PM_1	2.82
+	PM_2.5	3.00
+	PM_4	2.99
+	PM_10	2.97
+UNIT [PM_i] = 10E-06 g / m^3
+PM_i is the Concentration of atmospheric Particulate Matter,
+smaller than i micrometers in microgram per cubic meter.
+(Press ctrl+c to quit)
+===============================================================
+```
 #### Read sensor and log data
 To log sensor data to a file in csv format, invoke the tool like this:  
 ```
-./sps30.sh -o path/to/your/logfile.csv
+$ ./sps30.sh -o path/to/your/logfile.csv
 ```
 #### Set sensor read interval
 The default interval for the tool to wait between sensor reads is 60 seconds.  
 To change the interval, invoke the tool like this:  
 ```
-./sps30.sh -i 30
+$ ./sps30.sh -i 30
 ```
 #### Quiet Mode
 In quiet mode, sensor data is not displayed:  
 ```
-./sps30.sh -q
+$ ./sps30.sh -q
 ```
 ## sps30_service.sh, sps30.service and sps30.timer
 The script **sps30_logger.sh** provides functionality to read and
@@ -63,8 +80,8 @@ ExecStart=/path/to/git/sps30/sps30_service.sh
 ```
 Then copy the **sps30.service** and **sps30.timer** to the systemd directory:
 ```
-sudo cp sps30.service /etc/systemd/system
-sudo cp sps30.timer /etc/systemd/system
+# cp sps30.service /etc/systemd/system
+# cp sps30.timer /etc/systemd/system
 ```
 If you want to read the sensor in short time intervals, use the service without 
 the timer. In **sps30_logger.sh** line 89 set the mode and in line 95 set 
@@ -75,8 +92,8 @@ INTERVAL=3
 ```
 Then activate the service:
 ```
-sudo systemctl enable sps30.service
-sudo systemctl start sps30.service
+# systemctl enable sps30.service
+# systemctl start sps30.service
 ```
 If you want to log the data in long intervals, to minimize CPU time and 
 safe energy, use **sps30_logger.sh** with **sps30.timer**. Edit 
@@ -91,8 +108,8 @@ OnUnitActiveSec=10min
 ```
 Then start the timer.
 ```
-sudo systemctl enable sps30.timer
-sudo systemctl start sps30.timer
+# systemctl enable sps30.timer
+# systemctl start sps30.timer
 ```
 **Usage information for sps30.service and sps30.timer is also 
 provided within sps30_logger.sh**
