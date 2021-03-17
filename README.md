@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Tools to use Sensirion SPS30 Particulate Matter sensor with Raspberry Pi
 ## sps30.sh
 ### Description
@@ -117,3 +118,7 @@ provided within sps30_logger.sh**
 Feel free to contact me if you have questions. Contact information
 is provided in the scripts.
                                             de-arl,      Munich 2021-04-13
+=======
+# sps30
+Shell code to read and log Sensirion SPS30 Particulate Matter sensor data
+>>>>>>> dc397eca2cd70a15b679beff7a1ac7a3c9f09044
