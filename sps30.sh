@@ -10,13 +10,13 @@
 #		     		    Particulate Matter Sensor.
 #
 #	    OPTIONS: 	See function 'usage' below
-#REQUIREMENTS: 	Sensirion SPS30 Linux Kernel Driver
+#  REQUIREMENTS: 	Sensirion SPS30 Linux Kernel Driver
 #		  		      https://github.com/Sensirion/linux-sps30
 #	      NOTES: 	Function initialize_sensor expects SPS30 
 #		         		connected to I2C1, change if necessary
 #	     AUTHOR: 	Andreas Laible, a.laible@tum.de
-#	    VERSION: 	1.0
-#     CREATED: 	13.03.2020
+#	    VERSION: 	1.1
+#       CREATED: 	01.04.2021
 #===============================================================================
 
 
@@ -32,7 +32,7 @@ trap "clear; exit 0" 1 2 3
 #----------------------------------------------------------------------
 # Set default sensor read INTERVAL
 #----------------------------------------------------------------------
-INTERVAL=60
+INTERVAL=0
 
 
 
@@ -63,7 +63,7 @@ usage(){
 		OPTIONS:
 		-o LOGFILE	Log data to LOGFILE, comma separated csv
 		-i INTERVAL	Sensor read INTERVAL in seconds, defaults to 60
-		-q		Quiet mode
+		-v		Verbose mode
 		-h		Help
 
 		Command line tool to read and log data of
@@ -82,11 +82,13 @@ usage(){
 #   PARAMETER: ---
 #===============================================================================
 initialize_sensor(){
-	echo -e "Sensor initialization necessary, need root priviliges:"
+	if [ -n "$MODE_VERBOSE" ]; then
+		echo -e "Sensor initialization necessary, need root priviliges:"
+	fi
 	sudo modprobe industrialio
 	sudo modprobe crc8
 	sudo modprobe sps30
-	sleep 3
+	sleep 5
 	sudo echo sps30 0x69 | sudo tee "$I2C_BUS"	
 	echo -e "Sensor initialized!\n'"
 }    #------------  end of function initialize_sensor  ------------
@@ -114,7 +116,7 @@ read_sensor(){
 #   PARAMETER: ---
 #===============================================================================
 display_output(){
-    if [ -z "$MODE_QUIET" ]; then
+    if [ -n "$MODE_VERBOSE" ]; then
         clear
         echo "==============  SPS30 Particulate Matter Sensor  =============="
         time_info
@@ -123,12 +125,7 @@ display_output(){
         echo "==============================================================="
         tput cuu 15 # Move cursor 12 lines up
     else
-		clear
-        echo "==============  SPS30 Particulate Matter Sensor  =============="
-        time_info
-        echo "(Press ctrl+c to quit)"
-        echo "==============================================================="
-		tput cuu 6
+		display_data
     fi
 
 }    #------------  end of function display_output  ------------
@@ -145,24 +142,10 @@ time_info(){
 	# Adapt output if -o is passed
 	#---------------------------------------------------------------
 	if [ -z "$MODE_LOG" ]; then
-	#-----------------------------------------------------------
-	# Adapt output if -q is passed
-	#-----------------------------------------------------------
-	if [ -z "$MODE_QUIET" ]; then
 		printf " Read and display mode,\nno logging of data.\n"; 
-	else
-		printf " Quiet read only mode,\n no logging of data.\n"
-	fi
 	else 
 		FILEPATH=$(realpath "$LOGFILE")
-		#--------------------------------------
-		# Adapt output if -q is passed
-		#--------------------------------------
-		if [ -z "$MODE_QUIET" ]; then
-			echo -e " Data logging mode."
-		else
-			echo -e " Quiet data logging mode."
-		fi
+		echo -e " Data logging mode."
 	printf "Data log file: %s\n" "$FILEPATH"; 
 	fi
 	printf "Last sensor read: %s\n" "$TIME_READ"
@@ -199,6 +182,19 @@ log_output(){
 	DATA=$(printf ",%.2f,%.2f,%.2f,%.2f\n" "$PM_1" "$PM_2p5" "$PM_4" "$PM_10") 
 	echo "$TIME_READ""$DATA">> "$LOGFILE" 
 }   #------------  end of function log_output  ------------
+
+
+
+#===  FUNCTION  ================================================================
+#	     NAME: display_data
+# DESCRIPTION: Display sensor data and time as csv
+#	       TIME,PM_1,PM_2p5,PM_4,PM_10
+#   PARAMETER: ---
+#===============================================================================
+display_data(){
+	DATA=$(printf " %.2f %.2f %.2f %.2f\n" "$PM_1" "$PM_2p5" "$PM_4" "$PM_10") 
+	echo "$TIME_READ""$DATA"
+}   #------------  end of function display_data  ------------
 
 
 
@@ -253,7 +249,7 @@ init(){
 	#---------------------------------------------------------------------
 	# check which options are passed to the script
 	#---------------------------------------------------------------------
-	while getopts ":o:i:vqh" OPT; do
+	while getopts ":o:i:vh" OPT; do
 		case "$OPT" in
 			o) MODE_LOG=1
 			   #---------------------------------------------------------
@@ -270,7 +266,7 @@ init(){
 			   #---------------------------------------------------------
 			   if [ -z "$OPTARG" ]; then usage; else INTERVAL="$OPTARG"; fi
 		  	   ;;
-			q) MODE_QUIET=1
+			v) MODE_VERBOSE=1
 			   ;;
 			h) usage 
 			   ;;
@@ -295,7 +291,7 @@ main(){
 	# file passed as argument exists.
 	#---------------------------------------------------------------------------
 	if [ -n "$MODE_LOG" ] && [ -e "$LOGFILE" ]; then confirm_file; fi
-	echo "Initializing..."
+	if [ -n "$MODE_VERBOSE" ]; then echo "Initializing..."; fi
 	#---------------------------------------------------------------------------
 	# Checks wether SPS30 device is initialized already, 
 	# if not, executes function "initialize_sensor"
@@ -308,7 +304,7 @@ main(){
 	#---------------------------------------------------------------------------
 	while true; do
 		read_sensor
-		tput cuu 1; tput el;
+		if [ -n "$MODE_VERBOSE" ]; then tput cuu 1; tput el; fi
 		TIME_SCHEDULED=$(date +"%Y-%m-%d %T" --date "now $INTERVAL seconds")
 		display_output
 		if [ -n "$MODE_LOG" ]; then log_output; fi

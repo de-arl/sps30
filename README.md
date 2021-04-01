@@ -16,7 +16,16 @@ To display data, run:
 ```
 $ ./sps30.sh
 ```
+Verbose mode:
+'''
+$ ./sps30.sh -v
+'''
 ### Example output
+Normal mode:
+'''
+2021-04-01 18:19:20 4.06 4.42 4.43 4.44
+'''
+(date time PM_1 PM_2.5 PM4 PM10)
 ```
 ==============  SPS30 Particulate Matter Sensor  ==============
  Data logging mode.
@@ -43,11 +52,6 @@ The default interval for the tool to wait between sensor reads is 60 seconds.
 To change the interval, invoke the tool like this:
 ```
 $ ./sps30.sh -i 30
-```
-#### Quiet Mode
-In quiet mode, sensor data is not displayed:
-```
-$ ./sps30.sh -q
 ```
 
 ------------------------------------------------------------------
